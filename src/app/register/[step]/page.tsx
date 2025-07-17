@@ -1,8 +1,21 @@
-export default function RegistrationStepPage({
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Business Registration Step',
+  description: 'Complete your business registration step by step',
+}
+
+interface RegistrationStepPageProps {
+  params: {
+    step: string
+  }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function RegistrationStepPage({
   params,
-}: {
-  params: { step: string }
-}) {
+//   searchParams,
+}: RegistrationStepPageProps) {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-4">Registration Step: {params.step}</h1>
