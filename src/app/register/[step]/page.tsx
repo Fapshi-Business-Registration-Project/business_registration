@@ -5,17 +5,16 @@ export const metadata: Metadata = {
   description: 'Complete your business registration step by step',
 }
 
-interface RegistrationStepPageProps {
+type Props = {
   params: {
     step: string
   }
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default async function RegistrationStepPage({
+export default function RegistrationStepPage({
   params,
-//   searchParams,
-}: RegistrationStepPageProps) {
+}: Props) {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-4">Registration Step: {params.step}</h1>
