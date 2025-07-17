@@ -6,18 +6,20 @@ export const metadata: Metadata = {
 }
 
 type Props = {
-  params: {
+  params: Promise<{
     step: string
-  }
-  searchParams: { [key: string]: string | string[] | undefined }
+  }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default function RegistrationStepPage({
+export default async function RegistrationStepPage({
   params,
 }: Props) {
+  const { step } = await params
+  
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-4">Registration Step: {params.step}</h1>
+      <h1 className="text-2xl font-bold mb-4">Registration Step: {step}</h1>
       {/* Step-specific form will go here */}
     </div>
   )
