@@ -1,3 +1,4 @@
+// /components/forms/FormParts.tsx
 "use client";
 
 import React from 'react';
@@ -12,8 +13,8 @@ export interface SelectItem {
   label: string;
 }
 
-// Props interface for FormInput - Fixed generic constraint
-export interface FormInputProps<T extends FieldValues = FieldValues> {
+// Props interface for FormInput
+export interface FormInputProps<T extends FieldValues> {
   control: Control<T>;
   name: FieldPath<T>;
   label: string;
@@ -22,8 +23,8 @@ export interface FormInputProps<T extends FieldValues = FieldValues> {
   disabled?: boolean;
 }
 
-// Props interface for FormSelect - Fixed generic constraint
-export interface FormSelectProps<T extends FieldValues = FieldValues> {
+// Props interface for FormSelect
+export interface FormSelectProps<T extends FieldValues> {
   control: Control<T>;
   name: FieldPath<T>;
   label: string;
@@ -32,8 +33,8 @@ export interface FormSelectProps<T extends FieldValues = FieldValues> {
   disabled?: boolean;
 }
 
-// Reusable Input Field with proper typing - Fixed generic constraint
-export const FormInput = <T extends FieldValues = FieldValues>({
+// Reusable Input Field with proper typing
+export const FormInput = <T extends FieldValues>({
   control,
   name,
   label,
@@ -71,7 +72,8 @@ export const FormInput = <T extends FieldValues = FieldValues>({
   />
 );
 
-export const FormSelect = <T extends FieldValues = FieldValues>({
+// Reusable Select Field with proper typing
+export const FormSelect = <T extends FieldValues>({
   control,
   name,
   label,

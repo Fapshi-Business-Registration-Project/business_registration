@@ -1,3 +1,4 @@
+// /components/forms/ShareholdersForm.tsx
 "use client";
 
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -14,6 +15,7 @@ import { useCallback, useMemo } from 'react';
 //import type { Founder } from '@/types';
 import { z } from 'zod';
 
+// Use the exact Zod-inferred type for the form
 type ShareholdersFormData = z.infer<typeof shareholdersSchema>;
 
 const ShareholdersForm = () => {
@@ -115,45 +117,45 @@ const ShareholdersForm = () => {
                             </Button>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <FormInput<ShareholdersFormData>
+                            <FormInput
                                 control={form.control} 
                                 name={`shareholders.${index}.fullName`} 
                                 label="Full Name" 
                             />
-                            <FormInput<ShareholdersFormData>
+                            <FormInput
                                 control={form.control} 
                                 name={`shareholders.${index}.email`} 
                                 label="Email" 
                                 type="email"
                             />
-                            <FormInput<ShareholdersFormData>
+                            <FormInput
                                 control={form.control} 
                                 name={`shareholders.${index}.role`} 
                                 label="Role" 
                             />
-                            <FormInput<ShareholdersFormData>
+                            <FormInput
                                 control={form.control} 
                                 name={`shareholders.${index}.shareholding`} 
                                 label="Shareholding (%)" 
                                 type="number"
                             />
-                            <FormInput<ShareholdersFormData>
+                            <FormInput
                                 control={form.control} 
                                 name={`shareholders.${index}.nationalId`} 
                                 label="National ID" 
                             />
-                            <FormInput<ShareholdersFormData>
+                            <FormInput
                                 control={form.control} 
                                 name={`shareholders.${index}.phone`} 
                                 label="Phone" 
                                 type="tel"
                             />
-                            <FormInput<ShareholdersFormData>
+                            <FormInput
                                 control={form.control} 
                                 name={`shareholders.${index}.nationality`} 
                                 label="Nationality" 
                             />
-                            <FormInput<ShareholdersFormData>
+                            <FormInput
                                 control={form.control} 
                                 name={`shareholders.${index}.dateOfBirth`} 
                                 label="Date of Birth" 
