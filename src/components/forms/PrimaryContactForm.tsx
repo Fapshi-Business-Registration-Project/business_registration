@@ -1,3 +1,4 @@
+// /components/forms/PrimaryContactForm.tsx
 "use client";
 
 import { useForm } from 'react-hook-form';
@@ -59,21 +60,21 @@ const PrimaryContactForm = () => {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 
-                <FormInput<FormData> control={form.control} name="fullName" label="Full Name" />
+                <FormInput control={form.control} name="fullName" label="Full Name" />
                 
-                <FormInput<FormData> control={form.control} name="nationalId" label="National ID Number" />
+                <FormInput control={form.control} name="nationalId" label="National ID Number" />
                 
-                <FormInput<FormData> control={form.control} name="dateOfBirth" label="Date of Birth" type="date" />
+                <FormInput control={form.control} name="dateOfBirth" label="Date of Birth" type="date" />
                 
-                <FormInput<FormData> control={form.control} name="nationality" label="Nationality" />
+                <FormInput control={form.control} name="nationality" label="Nationality" />
                 
-                <FormInput<FormData> control={form.control} name="phone" label="Phone Number" />
+                <FormInput control={form.control} name="phone" label="Phone Number" />
                 
-                <FormInput<FormData> control={form.control} name="email" label="Email Address" />
+                <FormInput control={form.control} name="email" label="Email Address" />
                 
-                <FormInput<FormData> control={form.control} name="role" label="Role" placeholder="e.g., CEO, Director" />
+                <FormInput control={form.control} name="role" label="Role" placeholder="e.g., CEO, Director" />
                 
-                <FormInput<FormData>
+                <FormInput
                     control={form.control} 
                     name="shareholding" 
                     label="Shareholding (%)" 

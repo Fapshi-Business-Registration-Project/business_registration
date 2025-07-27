@@ -22,7 +22,7 @@ export const founderSchema = z.object({
   phone: z.string().min(9, { message: 'A valid phone number is required.' }),
   email: z.string().email({ message: 'A valid email is required.' }),
   role: z.string().min(2, { message: 'Role is required.' }),
-  shareholding: z.coerce.number().min(0).max(100, { message: 'Shareholding must be between 0 and 100.' }), // Remove coerce
+  shareholding: z.number().min(0).max(100, { message: 'Shareholding must be between 0 and 100.' }), // Changed from z.coerce.number()
   nationality: z.string().min(2, { message: 'Nationality is required.' }),
   dateOfBirth: z.string().min(1, { message: 'Date of birth is required.' }),
 });
