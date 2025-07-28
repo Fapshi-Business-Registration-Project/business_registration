@@ -1,4 +1,3 @@
-// /components/forms/SummaryView.tsx
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -27,8 +26,8 @@ const SummaryView = () => {
                 description: "Your business registration is now In Review. You will be redirected.",
             });
             resetForm(); // Clear context and localStorage
-            // In a real app, you would redirect to a dashboard.
-            setTimeout(() => router.push('/'), 2000);
+            // Redirect to dashboard.
+            setTimeout(() => router.push('/dashboard'), 2000);
         }, 1500);
     };
     
@@ -79,7 +78,7 @@ const SummaryView = () => {
             </Card>
             
             <div className="flex justify-between mt-6">
-                <Button variant="outline" onClick={() => router.push('/register/documents')}>Back</Button>
+                <Button variant="outline" onClick={() => router.push('/dashboard')}>Back</Button>
                 <Button onClick={handleSubmit}>Confirm & Submit Application</Button>
             </div>
         </div>

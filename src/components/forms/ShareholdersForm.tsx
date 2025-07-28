@@ -180,11 +180,12 @@ const ShareholdersForm = () => {
                 )}
 
                 <div className="flex justify-between mt-6">
-                    <Button type="button" variant="outline" onClick={handleBack}>
+                    <Button type="button" variant="outline" onClick={handleBack} className="focus:ring-2 focus:ring-[#0D80F2]">
                         Back
                     </Button>
-                    <Button type="submit" disabled={form.formState.isSubmitting}>
-                        {form.formState.isSubmitting ? 'Processing...' : 'Next Step'}
+                    <Button type="submit" disabled={form.formState.isSubmitting} className = "bg-[#0D80F2]">
+                        
+                        {form.formState.isSubmitting ? 'Processing...' : 'Continue'}
                     </Button>
                 </div>
             </form>

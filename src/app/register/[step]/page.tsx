@@ -1,4 +1,3 @@
-// /app/register/[step]/page.tsx
 "use client";
 
 import React, { useEffect } from 'react';
@@ -11,7 +10,6 @@ import PrimaryContactForm from '@/components/forms/PrimaryContactForm';
 import ShareholdersForm from '@/components/forms/ShareholdersForm';
 import DocumentUploadsForm from '@/components/forms/DocumentUploadsForm';
 import SummaryView from '@/components/forms/SummaryView';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { STEPS } from '@/lib/constants';
 
 const StepPage = () => {
@@ -54,15 +52,11 @@ const StepPage = () => {
   if (!currentStep) return null;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Step {currentStep.id}: {currentStep.name}</CardTitle>
-        <CardDescription>Please fill out the details below.</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div>
+     
         {renderStepContent()}
-      </CardContent>
-    </Card>
+  
+    </div>
   );
 };
 
