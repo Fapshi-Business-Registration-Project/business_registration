@@ -1,4 +1,3 @@
-// /app/register/layout.tsx
 import { RegistrationProvider } from "@/contexts/RegistrationContext"
 import { Toaster } from "@/components/ui/sonner";
 import { StepIndicator } from "@/components/ui/StepIndicator";

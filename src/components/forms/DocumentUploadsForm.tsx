@@ -81,8 +81,8 @@ const DocumentUploadsForm = () => {
                 ))}
                 
                 <div className="flex justify-between mt-6">
-                    <Button type="button" variant="outline" onClick={() => router.back()}>Back</Button>
-                    <Button type="submit">Go to Summary</Button>
+                    <Button type="button" variant="outline" className="focus:ring-2 focus:ring-[#0D80F2]" onClick={() => router.back()}>Back</Button>
+                    <Button type="submit" className = "bg-[#0D80F2]">Go to Summary</Button>
                 </div>
             </form>
         </Form>
