@@ -258,6 +258,7 @@ const DocumentUploadsForm = () => {
                         className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${totalRequired > 0 ? (completedUploads / totalRequired) * 100 : 0}%` }}
                     />
+
                 </div>
             </div>
 
