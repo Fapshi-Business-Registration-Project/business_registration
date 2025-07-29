@@ -14,21 +14,29 @@ const SummaryItem = ({ label, value }: { label: string; value?: string | number 
 );
 
 const SummaryView = () => {
+
+
+
+
+
+    
     const router = useRouter();
-    const { formData, resetForm } = useRegistration();
+    const { formData, addApplication, resetForm } = useRegistration();
 
-    const handleSubmit = () => {
-        console.log("Final Submission Data:", formData);
-        toast.info("Simulating submission...");
+     const handleSubmit = () => {
+        // 1. Add the current form data to our list of applications
+        addApplication(formData);
 
-        setTimeout(() => {
-            toast.success("Application Submitted!", {
-                description: "Your business registration is now In Review. You will be redirected.",
-            });
-            resetForm(); // Clear context and localStorage
-            // Redirect to dashboard.
-            setTimeout(() => router.push('/dashboard'), 2000);
-        }, 1500);
+        // 2. Show feedback to the user
+        toast.success("Application Submitted!", {
+            description: "Your registration is now In Review. Redirecting to dashboard...",
+        });
+
+        // 3. Reset the form data
+        resetForm();
+
+        // 4. Redirect to the dashboard after a short delay
+        setTimeout(() => router.push('/dashboard'), 2000);
     };
     
     const { businessInfo, primaryContact, shareholders, documents } = formData;

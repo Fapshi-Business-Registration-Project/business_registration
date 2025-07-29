@@ -2,11 +2,14 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { RegistrationData } from '@/types';
+import { RegistrationData, Application } from '@/types';
+import { mockApplications } from '@/lib/mock-data'; // We'll use this for initial data
 
 interface RegistrationContextType {
   formData: RegistrationData;
   setFormData: React.Dispatch<React.SetStateAction<RegistrationData>>;
+  applications: Application[];
+  addApplication: (data: RegistrationData) => void;
   resetForm: () => void;
 }
 
@@ -17,44 +20,60 @@ const initialData: RegistrationData = {
     primaryContact: undefined,
     shareholders: [],
     documents: {
-      nationalId: '',
-      attestationOfNonConviction: '',
-      proofOfAddress: '',
-      photoOrSelfie: ''
+        nationalId: '',
+        attestationOfNonConviction: '',
+        proofOfAddress: '',
+        photoOrSelfie: ''
     },
 };
 
+const APPLICATIONS_STORAGE_KEY = 'fapshiApplications';
+const FORM_DATA_STORAGE_KEY = 'registrationFormData';
+
 export const RegistrationProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<RegistrationData>(() => {
-    if (typeof window === 'undefined') {
-        return initialData;
-    }
-    try {
-        const item = window.localStorage.getItem('registrationFormData');
-        return item ? JSON.parse(item) : initialData;
-    } catch (error) {
-        console.error("Error reading from localStorage", error);
-        return initialData;
-    }
+    if (typeof window === 'undefined') return initialData;
+    const item = window.localStorage.getItem(FORM_DATA_STORAGE_KEY);
+    return item ? JSON.parse(item) : initialData;
+  });
+  
+  const [applications, setApplications] = useState<Application[]>(() => {
+      if (typeof window === 'undefined') return mockApplications;
+      const item = window.localStorage.getItem(APPLICATIONS_STORAGE_KEY);
+      // Initialize with mock data if localStorage is empty
+      return item ? JSON.parse(item) : mockApplications;
   });
 
   useEffect(() => {
-    try {
-        window.localStorage.setItem('registrationFormData', JSON.stringify(formData));
-    } catch (error) {
-        console.error("Error writing to localStorage", error);
-    }
+    window.localStorage.setItem(FORM_DATA_STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
   
+  useEffect(() => {
+    window.localStorage.setItem(APPLICATIONS_STORAGE_KEY, JSON.stringify(applications));
+  }, [applications]);
+  
+  const addApplication = (data: RegistrationData) => {
+      if (!data.businessInfo || !data.primaryContact) return;
+
+      const newApplication: Application = {
+          id: new Date().toISOString(), // Simple unique ID
+          businessName: data.businessInfo.businessName,
+          type: data.businessInfo.businessType,
+          region: data.businessInfo.region,
+          submittedDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+          status: 'Submitted', // New applications are 'Submitted'
+      };
+
+      setApplications(prev => [newApplication, ...prev]);
+  };
+
   const resetForm = () => {
       setFormData(initialData);
-      if (typeof window !== 'undefined') {
-          window.localStorage.removeItem('registrationFormData');
-      }
+      window.localStorage.removeItem(FORM_DATA_STORAGE_KEY);
   };
 
   return (
-    <RegistrationContext.Provider value={{ formData, setFormData, resetForm }}>
+    <RegistrationContext.Provider value={{ formData, setFormData, applications, addApplication, resetForm }}>
       {children}
     </RegistrationContext.Provider>
   );
