@@ -258,6 +258,13 @@ const DocumentUploadsForm = () => {
                         className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${totalRequired > 0 ? (completedUploads / totalRequired) * 100 : 0}%` }}
                     />
+
+                ))}
+                
+                <div className="flex justify-between mt-6">
+                    <Button type="button" variant="outline" className="focus:ring-2 focus:ring-[#0D80F2]" onClick={() => router.back()}>Back</Button>
+                    <Button type="submit" className = "bg-[#0D80F2]">Go to Summary</Button>
+
                 </div>
             </div>
 

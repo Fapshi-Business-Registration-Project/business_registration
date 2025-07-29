@@ -82,8 +82,8 @@ const PrimaryContactForm = () => {
                 />
 
                 <div className="flex justify-between">
-                    <Button type="button" variant="outline" onClick={() => router.back()}>Back</Button>
-                    <Button type="submit">Next Step</Button>
+                    <Button type="button" variant="outline" className="focus:ring-2 focus:ring-[#0D80F2]" onClick={() => router.back()}>Back</Button>
+                    <Button type="submit" className='bg-[#0D80F2]'>Continue</Button>
                 </div>
             </form>
         </Form>

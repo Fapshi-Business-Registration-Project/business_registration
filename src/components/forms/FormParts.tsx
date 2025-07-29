@@ -56,6 +56,7 @@ export const FormInput = <T extends FieldValues>({
             {...field}
             // Handle number input conversion
             value={type === 'number' ? field.value || '' : field.value}
+            className='bg-[#E8EDF5]  placeholder:text-[#B0B7C3] focus:ring-0 focus:border-[#0D80F2] border-2 border-[#E8EDF5] rounded-lg'
             onChange={(e) => {
               if (type === 'number') {
                 const value = e.target.value === '' ? 0 : Number(e.target.value);
@@ -93,8 +94,8 @@ export const FormSelect = <T extends FieldValues>({
           disabled={disabled}
         >
           <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder={placeholder} />
+            <SelectTrigger className='bg-[#E8EDF5]'>
+              <SelectValue placeholder={placeholder}  />
             </SelectTrigger>
           </FormControl>
           <SelectContent>
