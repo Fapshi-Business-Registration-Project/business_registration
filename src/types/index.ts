@@ -38,3 +38,12 @@ export interface RegistrationData {
   shareholders?: Founder[];
   documents?: DocumentUploads;
 }
+
+export interface Application {
+  id: string;
+  businessName: string;
+  type: string;
+  region: string;
+  submittedDate: string;
+  status: 'Draft' | 'Submitted' | 'Approved' | 'Rejected';
+}
