@@ -1,43 +1,52 @@
 // /components/dashboard/ApplicationCard.tsx
 import { Application } from "@/types";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
 interface ApplicationCardProps {
   application: Application;
+  onSelect: (application: Application) => void;
 }
 
-const statusColors = {
-  Draft: "bg-gray-500",
-  Submitted: "bg-blue-500",
-  Approved: "bg-green-500",
-  Rejected: "bg-red-500",
-};
+export const ApplicationCard = ({ application, onSelect }: ApplicationCardProps) => {
+  const handleViewClick = () => {
+    onSelect(application);
+  };
 
-export const ApplicationCard = ({ application }: ApplicationCardProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-between items-start">
+    <Card className="border-0">
+      <div className="flex justify-between items-start">
+        <div className="flex flex-col space-y-2 align-start w-2/3">
+          <CardHeader>
+            <div className="text-sm font-normal text-[#5C738A]">
+              {application.status}
+            </div>
             <CardTitle>{application.businessName}</CardTitle>
-            <Badge className={cn("text-white", statusColors[application.status])}>
-                {application.status}
-            </Badge>
+            <CardDescription>
+              <p>Type: {application.type} </p>
+              <p>Region: {application.region}</p>
+              <p className="text-sm text-muted-foreground">
+                Submitted: {new Date(application.submittedDate).toLocaleDateString()}
+              </p>
+            
+              <Button 
+                variant="outline" 
+                className="mt-4 rounded-full px-4 bg-[#] w-2/3"
+                onClick={handleViewClick}
+              >
+                View
+              </Button>
+            </CardDescription>
+          </CardHeader>
         </div>
-        <CardDescription>
-          {application.type} / {application.region}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">
-          Submitted: {new Date(application.submittedDate).toLocaleDateString()}
-        </p>
-      </CardContent>
-      <CardFooter>
-        <Button variant="outline" className="w-full">View</Button>
-      </CardFooter>
+        <Image 
+          src="/image.png"
+          alt="Application Image"
+          width={160}
+          height={160}
+        />
+      </div>
     </Card>
   );
 };
