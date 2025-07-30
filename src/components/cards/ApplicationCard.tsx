@@ -15,7 +15,7 @@ export const ApplicationCard = ({ application, onSelect }: ApplicationCardProps)
   };
 
   return (
-    <Card className="border-0">
+    <Card className="rounded-none border-0 drop-shadow-0">
       <div className="flex justify-between items-start">
         <div className="flex flex-col space-y-2 align-start w-2/3">
           <CardHeader>
@@ -40,12 +40,14 @@ export const ApplicationCard = ({ application, onSelect }: ApplicationCardProps)
             </CardDescription>
           </CardHeader>
         </div>
-        <Image 
+       <div className="mr-4">
+         <Image 
           src="/image.png"
           alt="Application Image"
           width={160}
           height={160}
         />
+       </div>
       </div>
     </Card>
   );
