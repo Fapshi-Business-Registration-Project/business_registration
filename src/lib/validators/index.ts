@@ -15,21 +15,31 @@ export const businessInfoSchema = z.object({
   businessEmail: z.string().email({ message: 'A valid email is required.' }),
 });
 
-// Step 2 & 3: Founder/Shareholder Validation
+// Shareholder document validation schema
+export const shareholderDocumentsSchema = z.object({
+  nationalId: z.string().min(1, { message: "National ID upload is required." }),
+  proofOfAddress: z.string().min(1, { message: "Proof of Address is required." }),
+  attestationOfNonConviction: z.string().min(1, { message: "Attestation of Non-Conviction is required." }),
+  photoOrSelfie: z.string().min(1, { message: "Photo/Selfie is required." }),
+});
+
+// Step 2 & 3: Founder/Shareholder Validation (Updated)
 export const founderSchema = z.object({
   fullName: z.string().min(3, { message: 'Full name is required.' }),
   nationalId: z.string().min(5, { message: 'A valid National ID number is required.' }),
   phone: z.string().min(9, { message: 'A valid phone number is required.' }),
   email: z.string().email({ message: 'A valid email is required.' }),
   role: z.string().min(2, { message: 'Role is required.' }),
-  shareholding: z.number().min(0).max(100, { message: 'Shareholding must be between 0 and 100.' }), // Changed from z.coerce.number()
+  shareholding: z.number().min(0).max(100, { message: 'Shareholding must be between 0 and 100.' }),
   nationality: z.string().min(2, { message: 'Nationality is required.' }),
   dateOfBirth: z.string().min(1, { message: 'Date of birth is required.' }),
+  // Add documents field for each shareholder
+  documents: shareholderDocumentsSchema.optional(),
 });
 
 // Validation for the entire shareholders step
 export const shareholdersSchema = z.object({
-  shareholders: z.array(founderSchema)
+  shareholders: z.array(founderSchema),
 });
 
 // Step 4: Document Upload Validation (validating filenames)
