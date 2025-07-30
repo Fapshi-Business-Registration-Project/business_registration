@@ -137,90 +137,78 @@ const DocumentUploadsForm = () => {
         // Simulate upload process
         simulateUpload(requirementId, fileId);
     };
+// Improved simulateUpload function with better error handling
+const simulateUpload = (requirementId: string, fileId: string) => {
+    // Start uploading
+    setUploadedFiles(prev => ({
+        ...prev,
+        [requirementId]: {
+            ...prev[requirementId],
+            status: 'uploading',
+            uploadProgress: 0
+        }
+    }));
 
-    // Simulate file upload with progress
-    const simulateUpload = (requirementId: string, fileId: string) => {
-        // Start uploading
+    // Add timeout to prevent infinite hanging
+    const uploadTimeout = setTimeout(() => {
         setUploadedFiles(prev => ({
             ...prev,
             [requirementId]: {
                 ...prev[requirementId],
-                status: 'uploading',
-                uploadProgress: 0
+                status: 'error',
+                uploadProgress: 0,
+                errorMessage: 'Upload timeout. Please try again.'
             }
         }));
+    }, 30000); // 30 second timeout
 
-        // Simulate progress
-        const interval = setInterval(() => {
-            setUploadedFiles(prev => {
-                const currentFile = prev[requirementId];
-                if (!currentFile || currentFile.id !== fileId) {
-                    clearInterval(interval);
-                    return prev;
-                }
+    // Simulate progress
+    const interval = setInterval(() => {
+        setUploadedFiles(prev => {
+            const currentFile = prev[requirementId];
+            
+            // Clear interval and timeout if file doesn't exist or ID mismatch
+            if (!currentFile || currentFile.id !== fileId) {
+                clearInterval(interval);
+                clearTimeout(uploadTimeout);
+                return prev;
+            }
 
-                const newProgress = Math.min(currentFile.uploadProgress + Math.random() * 25, 100);
+            // Ensure we don't exceed 100%
+            const increment = Math.min(Math.random() * 15 + 5, 100 - currentFile.uploadProgress);
+            const newProgress = Math.min(currentFile.uploadProgress + increment, 100);
+            
+            if (newProgress >= 100) {
+                clearInterval(interval);
+                clearTimeout(uploadTimeout);
                 
-                if (newProgress >= 100) {
-                    clearInterval(interval);
-                    
-                    // Simulate success (90% success rate for demo)
-                    const success = Math.random() > 0.1;
-                    
-                    return {
-                        ...prev,
-                        [requirementId]: {
-                            ...currentFile,
-                            uploadProgress: 100,
-                            status: success ? 'completed' : 'error',
-                            errorMessage: success ? undefined : 'Upload failed. Please try again.'
-                        }
-                    };
-                }
-
+                // Simulate success (95% success rate for demo)
+                const success = Math.random() > 0.05;
+                
                 return {
                     ...prev,
                     [requirementId]: {
                         ...currentFile,
-                        uploadProgress: newProgress
+                        uploadProgress: 100,
+                        status: success ? 'completed' : 'error',
+                        errorMessage: success ? undefined : 'Upload failed. Please try again.'
                     }
                 };
-            });
-        }, 200);
-    };
-
-    // Handle file removal
-    const handleRemoveFile = (requirementId: string) => {
-        setUploadedFiles(prev => {
-            const newFiles = { ...prev };
-            if (newFiles[requirementId]?.previewUrl) {
-                URL.revokeObjectURL(newFiles[requirementId].previewUrl);
             }
-            delete newFiles[requirementId];
-            return newFiles;
-        });
 
-        // Clear form field
-        form.setValue(requirementId as keyof DocumentUploads, '', { shouldValidate: true });
-    };
-
-    // Handle file reupload
-    const handleReupload = (requirementId: string) => {
-        const currentFile = uploadedFiles[requirementId];
-        if (currentFile) {
-            setUploadedFiles(prev => ({
+            return {
                 ...prev,
                 [requirementId]: {
                     ...currentFile,
-                    status: 'pending',
-                    uploadProgress: 0,
-                    errorMessage: undefined
+                    uploadProgress: newProgress
                 }
-            }));
-            
-            simulateUpload(requirementId, currentFile.id);
-        }
-    };
+            };
+        });
+    }, 300); // Slightly slower for more realistic feel
+
+    // Store interval ID for cleanup if needed
+    return { interval, timeout: uploadTimeout };
+};
 
     const onSubmit = (data: DocumentUploads) => {
         // Check if all required files are uploaded successfully
@@ -270,6 +258,22 @@ const DocumentUploadsForm = () => {
                     {documentRequirements.map((requirement) => {
                         const uploadedFile = uploadedFiles[requirement.id];
                         
+                        const handleRemoveFile = (id: string) => {
+                            // Remove the file from uploadedFiles state
+                            setUploadedFiles(prev => {
+                                const newFiles = { ...prev };
+                                delete newFiles[id];
+                                return newFiles;
+                            });
+
+                            // Reset the form value for this field
+                            form.setValue(id as keyof DocumentUploads, '', { shouldValidate: true });
+                        };
+
+                        const handleReupload = (id: string) => {
+                            handleRemoveFile(id);
+                        };
+
                         return (
                             <FormField
                                 key={requirement.id}
