@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { RegistrationProvider } from "@/contexts/RegistrationContext";
+import { AuthProvider } from "@/hooks/useAuth";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Configure Poppins to provide a CSS variable
+const poppins = Poppins({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"], // It's best to include all needed weights
+  variable: "--font-sans", // This is the key change
 });
 
 export const metadata: Metadata = {
@@ -24,13 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <RegistrationProvider>
-          {children}
-        </RegistrationProvider>
+    // Apply the variable to the <html> tag
+    <html lang="en" className={poppins.variable}>
+      <body>
+        <AuthProvider>
+          <RegistrationProvider>{children}</RegistrationProvider>
+        </AuthProvider>
       </body>
     </html>
   );
