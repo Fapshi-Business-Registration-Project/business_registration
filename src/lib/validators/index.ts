@@ -51,3 +51,18 @@ export const documentUploadsSchema = z.object({
   articlesOfAssociation: z.string().optional(),
   businessLicense: z.string().optional(),
 });
+
+//authentication validation schema
+export const authSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+})
+export const registerSchema = authSchema
+  .extend({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  })

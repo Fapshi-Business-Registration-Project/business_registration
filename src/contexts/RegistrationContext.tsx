@@ -1,79 +1,141 @@
-// /context/RegistrationContext.tsx
 "use client";
-
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import { RegistrationData, Application } from '@/types';
-import { mockApplications } from '@/lib/mock-data'; // We'll use this for initial data
+import { useAuthContext } from '@/hooks/useAuth';
 
 interface RegistrationContextType {
   formData: RegistrationData;
   setFormData: React.Dispatch<React.SetStateAction<RegistrationData>>;
   applications: Application[];
-  addApplication: (data: RegistrationData) => void;
+  addApplication: (data: RegistrationData) => Promise<void>;
   resetForm: () => void;
+  isSubmitting: boolean;
+  submissionError: Error | null;
 }
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);
 
 const initialData: RegistrationData = {
-    businessInfo: undefined,
-    primaryContact: undefined,
-    shareholders: [],
-    documents: {
-        nationalId: '',
-        attestationOfNonConviction: '',
-        proofOfAddress: '',
-        photoOrSelfie: ''
-    },
+  businessInfo: undefined,
+  primaryContact: undefined,
+  shareholders: [],
+  documents: {
+    nationalId: '',
+    attestationOfNonConviction: '',
+    proofOfAddress: '',
+    photoOrSelfie: ''
+  },
 };
 
-const APPLICATIONS_STORAGE_KEY = 'fapshiApplications';
-const FORM_DATA_STORAGE_KEY = 'registrationFormData';
-
 export const RegistrationProvider = ({ children }: { children: ReactNode }) => {
-  const [formData, setFormData] = useState<RegistrationData>(() => {
-    if (typeof window === 'undefined') return initialData;
-    const item = window.localStorage.getItem(FORM_DATA_STORAGE_KEY);
-    return item ? JSON.parse(item) : initialData;
-  });
+  const { user } = useAuthContext();
   
+  // Initialize with data from localStorage if user exists
   const [applications, setApplications] = useState<Application[]>(() => {
-      if (typeof window === 'undefined') return mockApplications;
-      const item = window.localStorage.getItem(APPLICATIONS_STORAGE_KEY);
-      // Initialize with mock data if localStorage is empty
-      return item ? JSON.parse(item) : mockApplications;
+    if (typeof window === 'undefined' || !user) return [];
+    try {
+      const saved = localStorage.getItem(`fapshiApplications_${user.id}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
 
-  useEffect(() => {
-    window.localStorage.setItem(FORM_DATA_STORAGE_KEY, JSON.stringify(formData));
-  }, [formData]);
-  
-  useEffect(() => {
-    window.localStorage.setItem(APPLICATIONS_STORAGE_KEY, JSON.stringify(applications));
-  }, [applications]);
-  
-  const addApplication = (data: RegistrationData) => {
-      if (!data.businessInfo || !data.primaryContact) return;
+  const [formData, setFormData] = useState<RegistrationData>(initialData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState<Error | null>(null);
 
-      const newApplication: Application = {
-          id: new Date().toISOString(), // Simple unique ID
-          businessName: data.businessInfo.businessName,
-          type: data.businessInfo.businessType,
-          region: data.businessInfo.region,
-          submittedDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-          status: 'Submitted', // New applications are 'Submitted'
+  // Load user data when user changes
+  useEffect(() => {
+    if (user && typeof window !== 'undefined') {
+      try {
+        const appsKey = `fapshiApplications_${user.id}`;
+        const saved = localStorage.getItem(appsKey);
+        setApplications(saved ? JSON.parse(saved) : []);
+      } catch {
+        setApplications([]);
+      }
+    } else {
+      setApplications([]);
+      setFormData(initialData);
+    }
+  }, [user]);
+
+  // Save applications to localStorage
+  useEffect(() => {
+    if (user && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(`fapshiApplications_${user.id}`, JSON.stringify(applications));
+      } catch (error) {
+        console.error('Failed to save applications:', error);
+      }
+    }
+  }, [applications, user]);
+
+  const addApplication = useCallback(async (data: RegistrationData) => {
+    if (!user || !data.businessInfo) return;
+
+    setIsSubmitting(true);
+    setSubmissionError(null);
+
+    const tempId = `temp_${Date.now()}`;
+    const newApplication: Application = {
+      ...data,
+      id: tempId,
+      status: 'Submitted',
+      submittedDate: new Date().toISOString(),
+      businessName: data.businessInfo.businessName,
+      type: data.businessInfo.businessType,
+      region: data.businessInfo.region,
+      isOptimistic: true
+    };
+
+    // Add optimistically
+    setApplications(prev => [newApplication, ...prev]);
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Replace with server response
+      const serverResponse: Application = {
+        ...newApplication,
+        id: `app_${Date.now()}`,
+        isOptimistic: false
       };
 
-      setApplications(prev => [newApplication, ...prev]);
-  };
+      setApplications(prev => [
+        serverResponse,
+        ...prev.filter(app => app.id !== tempId)
+      ]);
 
-  const resetForm = () => {
       setFormData(initialData);
-      window.localStorage.removeItem(FORM_DATA_STORAGE_KEY);
+    } catch (error) {
+      // Remove on error
+      setApplications(prev => prev.filter(app => app.id !== tempId));
+      setSubmissionError(error as Error);
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [user]);
+
+  const resetForm = useCallback(() => {
+    setFormData(initialData);
+  }, []);
+
+  const value = {
+    formData,
+    setFormData,
+    applications,
+    addApplication,
+    resetForm,
+    isSubmitting,
+    submissionError
   };
 
   return (
-    <RegistrationContext.Provider value={{ formData, setFormData, applications, addApplication, resetForm }}>
+    <RegistrationContext.Provider value={value}>
       {children}
     </RegistrationContext.Provider>
   );

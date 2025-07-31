@@ -9,6 +9,7 @@ export const mockApplications: Application[] = [
     region: 'Southwest',
     submittedDate: '2025-07-15',
     status: 'Draft',
+    isOptimistic: false,
   },
   {
     id: '2',
@@ -17,6 +18,7 @@ export const mockApplications: Application[] = [
     region: 'Littoral',
     submittedDate: '2025-05-05',
     status: 'Approved',
+    isOptimistic: false,
   },
   {
     id: '3',
@@ -25,6 +27,7 @@ export const mockApplications: Application[] = [
     region: 'Centre',
     submittedDate: '2025-04-10',
     status: 'Rejected',
+    isOptimistic: false,
   },
   
     
